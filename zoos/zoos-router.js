@@ -38,4 +38,28 @@ router.get("/:id", (req, res) => {
     });
 });
 
+//------Post------//
+
+router.post("/", (req, res) => {
+  if (!req.body.name) {
+    return res
+      .status(400)
+      .json({ message: "Please provide a name for the zoo." });
+  }
+  db("zoos")
+    .insert(req.body)
+    .then(ids => {
+      const id = ids[0];
+      db("zoos")
+        .where({ id })
+        .first()
+        .then(zoo => {
+          res.status(201).json(zoo);
+        });
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
+
 module.exports = router;
