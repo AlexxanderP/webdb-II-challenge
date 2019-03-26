@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const knex = require("knex");
 
+//-----KnexConfig-----//
 const knexConfig = {
   client: "sqlite3",
   useNullAsDefault: true,
@@ -81,5 +82,31 @@ router.delete("/:id", (req, res) => {
       res.status(500).json(err);
     });
 });
+
+//------Put------//
+
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+
+  if (!req.body.name) {
+    return res.status(400).json({ message: "Please provide an updated name." });
+  }
+
+  db("zoos")
+    .where({ id })
+    .update(req.body)
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json(count);
+      } else {
+        res.status(404).json({ message: "The Zoo could not be found." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
+
+//-----Router Export------//
 
 module.exports = router;
