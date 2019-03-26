@@ -24,6 +24,7 @@ router.get("/", (req, res) => {
     });
 });
 
+//-----Get by ID-----//
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 
@@ -56,6 +57,25 @@ router.post("/", (req, res) => {
         .then(zoo => {
           res.status(201).json(zoo);
         });
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
+
+//------Delete-----//
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  db("zoos")
+    .where({ id })
+    .del()
+    .then(count => {
+      if (count > 0) {
+        res.status(204).end();
+      } else {
+        res.status(404).json({ message: "The Zoo could not be found." });
+      }
     })
     .catch(err => {
       res.status(500).json(err);
